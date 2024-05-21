@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic-Tac-Toe</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+  }
+  .cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .cell:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+<div id="board"></div>
+<script>
+  const board = document.getElementById('board');
+  let currentPlayer = 'X';
+  let winner = null;
+
+  const cells = Array.from({ length: 9 }).map((_, index) => {
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.dataset.index = index;
+    cell.addEventListener('click', handleCellClick);
+    board.appendChild(cell);
+    return cell;
+  });
+
+  function handleCellClick(event) {
+    const cellIndex = parseInt(event.target.dataset.index);
+    if (!winner && !cells[cellIndex].textContent) {
+      cells[cellIndex].textContent = currentPlayer;
+      checkWinner();
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+  }
+
+  function checkWinner() {
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    for (const combination of winningCombinations) {
+      const [a, b, c] = combination;
+      if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+        winner = cells[a].textContent;
+        cells[a].style.backgroundColor = cells[b].style.backgroundColor = cells[c].style.backgroundColor = '#cfc';
+        setTimeout(() => {
+          alert(`Player ${winner} wins!`);
+        }, 100);
+        break;
+      }
+    }
+  }
+</script>
+</body>
+</html>
