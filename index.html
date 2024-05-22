@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tic-Tac-Toe</title>
 <style>
-  body {
+    body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -15,70 +15,201 @@
     height: 100vh;
     background-color: #f0f0f0;
   }
+  
   #board {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
     gap: 5px;
-  }
-  .cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 36px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+    border: 5px double #ccc; /* Set double border for the grid */
+    padding: 5px; /* Adjust padding to prevent content from touching the border */
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
   .cell:hover {
     background-color: #f0f0f0;
   }
+
+  #outcome-display {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+  text-align: center;
+  border: 5px double #ccc; /* Set double border for the grid */
+  padding: 0px;
+}
+
+#label {
+  display: flex;
+  justify-content: space-around; 
+  padding: 10px;  
+  font-size: 4.5vw;
+  margin-bottom: 0px;
+  background-color: aqua;
+}
+
+.container {
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+}
+
+.title {
+  font-size: 2rem;
+  margin: 0;
+  padding-left: 20%;
+}
+
+.close-btn {
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+
 </style>
 </head>
-<body>
-<div id="board"></div>
-<script>
-  const board = document.getElementById('board');
-  let currentPlayer = 'X';
-  let winner = null;
 
-  const cells = Array.from({ length: 9 }).map((_, index) => {
+<body>
+<div class="container">
+    <header class="header">
+        <h1 class="title">Tic Tac Toe</h1>
+        <button class="close-btn" onclick="closeWindow()">X</button>
+    </header>
+    <div id="winner-message"></div> <!-- Container for winner message -->
+    <div id="outcome-display"></div> <!-- Container for outcome display -->
+    <div id="board"></div>
+</div>
+<script>
+const board = document.getElementById('board');
+const winnerDisplay = document.getElementById('winner-message');
+const outcomeDisplay = document.getElementById('outcome-display');
+
+let currentPlayer = 'X';
+let winner = null;
+let moves = 0;
+
+const cells = Array.from({ length: 9 }).map((_, index) => {
     const cell = document.createElement('div');
     cell.classList.add('cell');
     cell.dataset.index = index;
     cell.addEventListener('click', handleCellClick);
     board.appendChild(cell);
     return cell;
-  });
+});
 
-  function handleCellClick(event) {
+function handleCellClick(event) {
     const cellIndex = parseInt(event.target.dataset.index);
     if (!winner && !cells[cellIndex].textContent) {
-      cells[cellIndex].textContent = currentPlayer;
-      checkWinner();
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        cells[cellIndex].textContent = currentPlayer;
+        moves++;
+        checkWinner();
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        if (moves === 9 && !winner) {
+            displayWinner("Draw");
+        }
     }
-  }
+}
 
-  function checkWinner() {
+function checkWinner() {
     const winningCombinations = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
     ];
     for (const combination of winningCombinations) {
-      const [a, b, c] = combination;
-      if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
-        winner = cells[a].textContent;
-        cells[a].style.backgroundColor = cells[b].style.backgroundColor = cells[c].style.backgroundColor = '#cfc';
-        setTimeout(() => {
-          alert(`Player ${winner} wins!`);
-        }, 100);
-        break;
-      }
+        const [a, b, c] = combination;
+        if (
+            cells[a].textContent &&
+            cells[a].textContent === cells[b].textContent &&
+            cells[a].textContent === cells[c].textContent
+        ) {
+            winner = cells[a].textContent;
+            cells[a].classList.add('winning-cell');
+            cells[b].classList.add('winning-cell');
+            cells[c].classList.add('winning-cell');
+            displayWinner(winner);
+            break;
+        }
     }
+}
+
+function displayWinner(winnerText) {
+    winnerDisplay.style.display = "none";
+    outcomeDisplay.textContent = winnerText === "Draw" ? "It's a Draw!" : `Player ${winnerText} wins!`;
+    outcomeDisplay.style.display = "block";
+    
+    let flashes = 6; // Number of flashes before resetting the game
+    let flashInterval = setInterval(() => {
+        if (flashes % 2 === 0) {
+            outcomeDisplay.style.display = "block";
+        } else {
+            outcomeDisplay.style.display = "none";
+        }
+        flashes--;
+        if (flashes === 0) {
+            clearInterval(flashInterval);
+            resetGame();
+        }
+    }, 300);
+}
+
+function resetGame() {
+    winner = null;
+    currentPlayer = 'X';
+    moves = 0;
+    winnerDisplay.textContent = "";
+    winnerDisplay.style.display = "block";
+    outcomeDisplay.style.display = "none";
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('winning-cell');
+    });
+}
+
+function closeWindow() {
+  if (confirm("Are you sure you want to close the window?")) {
+    window.close();
   }
+}
 </script>
+
 </body>
 </html>
