@@ -21,8 +21,8 @@
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
     gap: 5px;
-    border: 5px double #ccc; /* Set double border for the grid */
-    padding: 5px; /* Adjust padding to prevent content from touching the border */
+    border: 5px double #ccc; 
+    padding: 5px;
 }
 
 .board {
@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 4rem;
 }
   .cell:hover {
     background-color: #f0f0f0;
@@ -62,7 +62,7 @@
 
 .container {
   text-align: center;
-  border: 5px double #ccc; /* Set double border for the grid */
+  border: 5px double #ccc;
   padding: 0px;
 }
 
@@ -102,6 +102,7 @@
   border: none;
   cursor: pointer;
 }
+
 
 
 </style>
@@ -176,7 +177,7 @@ function displayWinner(winnerText) {
     outcomeDisplay.textContent = winnerText === "Draw" ? "It's a Draw!" : `Player ${winnerText} wins!`;
     outcomeDisplay.style.display = "block";
     
-    let flashes = 6; // Number of flashes before resetting the game
+    let flashes = 10;
     let flashInterval = setInterval(() => {
         if (flashes % 2 === 0) {
             outcomeDisplay.style.display = "block";
